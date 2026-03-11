@@ -12,9 +12,9 @@ struct MiniTimerApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .frame(minWidth: 280, minHeight: 180)
+                .frame(minWidth: 240, minHeight: 140)
         }
-        .defaultSize(width: 360, height: 220)
+        .defaultSize(width: 300, height: 160)
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
         .commands {
