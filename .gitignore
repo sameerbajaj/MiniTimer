@@ -1,0 +1,27 @@
+# Xcode
+#
+# gitignore contributors: scroll down to GitHub and 
+# libraries section
+
+build/
+DerivedData/
+*.hmap
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# macOS
+#
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Icon
+#
+AppIcon.png
+AppIcon.icns
+AppIcon.iconset/
+
+# Other
+#
+*.dmg

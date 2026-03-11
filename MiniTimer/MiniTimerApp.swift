@@ -13,5 +13,6 @@ struct MiniTimerApp: App {
         WindowGroup {
             ContentView()
         }
+        .windowStyle(.hiddenTitleBar)
     }
 }
