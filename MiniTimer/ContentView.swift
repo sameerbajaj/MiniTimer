@@ -106,7 +106,18 @@ struct ContentView: View {
                             .help("Always on Top")
                         }
                         .opacity(isHovering ? 1.0 : 0.6)
-                        .padding(.bottom, 12)
+                        .padding(.bottom, 8)
+                        
+                        // Version Label
+                        Button {
+                            NSWorkspace.shared.open(UpdateChecker.releasesPage)
+                        } label: {
+                            Text("v\(UpdateChecker.currentVersion)")
+                                .font(.system(size: 10, design: .monospaced))
+                                .foregroundColor(viewModel.updateInfo != nil ? .green : .secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.bottom, 4)
                         
                         Spacer()
                     }
