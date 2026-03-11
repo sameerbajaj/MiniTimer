@@ -11,7 +11,7 @@ struct UpdateInfo {
 }
 
 enum UpdateChecker {
-    static let githubRepo = "sameerbajaj/MiniTimer" // Placeholder, will update if found
+    static let githubRepo = "sameerbajaj/MiniTimer"
     static let releasesPage = URL(string: "https://github.com/\(githubRepo)/releases")!
 
     static func check() async -> UpdateInfo? {
