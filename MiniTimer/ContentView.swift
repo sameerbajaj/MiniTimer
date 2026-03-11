@@ -495,7 +495,7 @@ struct ContentView: View {
             Button {
                 withAnimation(.easeInOut(duration: 0.2)) {
                     updateStatusMessage = nil
-                    viewModel.updateErrorMessage = nil
+                    viewModel.clearUpdateError()
                 }
             } label: {
                 Image(systemName: "xmark")
@@ -685,7 +685,7 @@ struct ContentView: View {
 
         withAnimation(.easeInOut(duration: 0.2)) {
             updateStatusMessage = nil
-            viewModel.updateErrorMessage = nil
+            viewModel.clearUpdateError()
         }
 
         viewModel.manuallyCheckForUpdates()
@@ -696,7 +696,7 @@ struct ContentView: View {
 
         withAnimation(.easeInOut(duration: 0.2)) {
             updateStatusMessage = nil
-            viewModel.updateErrorMessage = nil
+            viewModel.clearUpdateError()
         }
 
         viewModel.installAvailableUpdate()

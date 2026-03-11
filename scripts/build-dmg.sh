@@ -3,23 +3,29 @@ set -e
 
 APP_NAME="MiniTimer"
 VERSION=${1:-"1.0.0"}
+BUILD_ROOT="build/DerivedData"
 STAGING_DIR="build/staging"
 DMG_NAME="${APP_NAME}-${VERSION}.dmg"
+APP_PATH="${BUILD_ROOT}/Build/Products/Release/${APP_NAME}.app"
 
 # 1. Build
 echo "Building ${APP_NAME} v${VERSION}..."
 xcodebuild -project "${APP_NAME}.xcodeproj" \
            -scheme "${APP_NAME}" \
            -configuration Release \
+           -derivedDataPath "${BUILD_ROOT}" \
            MARKETING_VERSION="${VERSION}" \
            CLEAN_BEFORE_BUILD=YES \
            CODE_SIGNING_ALLOWED=NO \
            build
 
-# Find the built .app
-APP_PATH=$(find ~/Library/Developer/Xcode/DerivedData -name "${APP_NAME}.app" -type d -print -quit)
 if [ -z "$APP_PATH" ]; then
     echo "Error: Could not find built .app"
+    exit 1
+fi
+
+if [ ! -d "$APP_PATH" ]; then
+    echo "Error: Built app not found at ${APP_PATH}"
     exit 1
 fi
 
@@ -34,10 +40,10 @@ if [ ! -f "${APP_PATH}/Contents/Resources/AppIcon.icns" ]; then
     sips -z 64 64   AppIcon.png --out AppIcon.iconset/icon_32x32@2x.png
     sips -z 128 128 AppIcon.png --out AppIcon.iconset/icon_128x128.png
     sips -z 256 256 AppIcon.png --out AppIcon.iconset/icon_128x128@2x.png
-    sips -z 256 256 AppIcon.iconset/icon_256x256.png
-    sips -z 512 512 AppIcon.iconset/icon_256x256@2x.png
-    sips -z 512 512 AppIcon.iconset/icon_512x512.png
-    sips -z 1024 1024 AppIcon.iconset/icon_512x512@2x.png
+    sips -z 256 256 AppIcon.png --out AppIcon.iconset/icon_256x256.png
+    sips -z 512 512 AppIcon.png --out AppIcon.iconset/icon_256x256@2x.png
+    sips -z 512 512 AppIcon.png --out AppIcon.iconset/icon_512x512.png
+    sips -z 1024 1024 AppIcon.png --out AppIcon.iconset/icon_512x512@2x.png
     iconutil -c icns AppIcon.iconset
     cp AppIcon.icns "${APP_PATH}/Contents/Resources/AppIcon.icns"
     rm -rf AppIcon.iconset AppIcon.png AppIcon.icns

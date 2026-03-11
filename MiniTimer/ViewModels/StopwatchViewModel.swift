@@ -30,6 +30,16 @@ final class StopwatchViewModel {
     private var startedAt: Date?
 
     init() {
+        selfUpdater.onStateChange = { [weak self] state in
+            guard let self else { return }
+
+            self.updateState = state
+
+            if case .failed(let message) = state {
+                self.updateAlert = .failure(message: message)
+            }
+        }
+
         DispatchQueue.main.async { [weak self] in
             self?.updateWindowLevel()
         }
@@ -156,6 +166,14 @@ final class StopwatchViewModel {
         updateAlert = nil
     }
 
+    func clearUpdateError() {
+        guard case .failed = updateState else { return }
+
+        selfUpdater.reset()
+        updateState = selfUpdater.state
+        updateAlert = nil
+    }
+
     func openUpdateDownloadInBrowser(from alert: UpdateAlert? = nil) {
         let url: URL?
 
@@ -223,6 +241,22 @@ final class StopwatchViewModel {
         return nil
     }
 
+    var installProgress: Double {
+        updateProgressValue ?? (isInstallingUpdate ? 1 : 0)
+    }
+
+    var installPhaseDescription: String {
+        switch updateState {
+        case .downloading(let progress):
+            let percent = Int((progress.clamped(to: 0...1) * 100).rounded())
+            return "Downloading update… \(percent)%"
+        case .installing:
+            return "Installing update…"
+        case .idle, .failed:
+            return ""
+        }
+    }
+
     var isInstallingUpdate: Bool {
         switch updateState {
         case .downloading, .installing:
@@ -271,19 +305,17 @@ final class StopwatchViewModel {
         guard !isInstallingUpdate else { return }
 
         updateAlert = nil
-        updateState = .downloading(progress: 0)
+        selfUpdater.state = .downloading(progress: 0)
 
         Task {
             await selfUpdater.installUpdate(from: info)
-
-            await MainActor.run {
-                self.updateState = selfUpdater.state
-
-                if case .failed(let message) = selfUpdater.state {
-                    self.updateAlert = .failure(message: message)
-                }
-            }
         }
+    }
+}
+
+private extension Double {
+    func clamped(to range: ClosedRange<Double>) -> Double {
+        min(max(self, range.lowerBound), range.upperBound)
     }
 }
 

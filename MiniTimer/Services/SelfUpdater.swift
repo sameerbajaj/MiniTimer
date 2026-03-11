@@ -9,6 +9,8 @@ final class SelfUpdater: NSObject {
         case failed(String)
     }
 
+    var onStateChange: ((State) -> Void)?
+
     struct InstallationContext {
         let appName: String
         let runningAppURL: URL
@@ -20,7 +22,11 @@ final class SelfUpdater: NSObject {
         let stagedAppURL: URL
     }
 
-    var state: State = .idle
+    var state: State = .idle {
+        didSet {
+            onStateChange?(state)
+        }
+    }
     var latestDownloadedFileURL: URL?
 
     private var downloadContinuation: CheckedContinuation<URL, Error>?
